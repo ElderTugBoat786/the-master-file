@@ -15,7 +15,19 @@ function errorHandler(err, req, res, next) {
   });
 }
 
+function authHandler(req,res,next){
+  if (!req.user) {
+    res.status(401);
+    res.json({
+      message : 'User must be authenticated'
+    })
+  }
+
+  next();
+}
+
 module.exports = {
   notFound,
-  errorHandler
+  errorHandler,
+  authHandler
 };
