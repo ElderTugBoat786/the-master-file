@@ -26,8 +26,15 @@ function authHandler(req,res,next){
   next();
 }
 
+
+function allowAllCors(req,res,next){
+  res.header('Access-Control-Allow-Origin' , '*' );
+  next();
+}
+
 module.exports = {
   notFound,
   errorHandler,
-  authHandler
+  authHandler,
+  allowAllCors
 };

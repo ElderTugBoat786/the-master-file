@@ -41,10 +41,12 @@ app.use(bodyParser.json())
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
+// app.use(cors());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(middlewares.allowAllCors);
 
 app.post('/login',
   passport.authenticate('local',{failureFlash: true }),
@@ -71,5 +73,6 @@ app.use('/v1', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
+
 
 module.exports = app;
