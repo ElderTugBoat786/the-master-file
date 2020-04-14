@@ -26,7 +26,7 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    connection.query("SELECT * FROM `users` WHERE `username` = '" + username + "'",function(err,rows){
+    connection.query("SELECT * FROM `users` WHERE `username` = '" + username + "' AND `password` = '" + password + "'",function(err,rows){
 			if (err) return done(err);
 			if (!rows.length) {
         return done(null, false, { message: 'Incorrect username.' }); // req.flash is the way to set flashdata using connect-flash
