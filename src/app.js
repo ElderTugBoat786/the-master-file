@@ -61,6 +61,40 @@ app.post('/login',
     })
   });
 
+app.post('/register',(req,res) => {
+	if (req.body.username == undefined || req.body.password == undefined || req.body.email == undefined ) {
+		res.json({
+			'error' : 1,
+			'message' : 'Missing some parameter'
+		})
+	}else {
+		connection.query('SELECT * FROM users where username = "'+req.body.username+'"',(err,rows) => {
+			if (err) return res.json({error:err});
+
+			if (rows.length == 0) {
+				connection.query('INSERT INTO users (username,password,email,score,active,level_id,admin) VALUES ("'+
+														req.body.username+'","'+
+														req.body.password+'","'+
+														req.body.email+'",0,0,0,0)',(err,result) => {
+					if (err) {
+						res.json({error:err});
+					}else {
+						res.json({
+							message : 'user created'
+						})
+					}
+				})
+			}else {
+				res.json({
+					error: 1,
+					messagge: 'username already exists'
+				})
+			}
+		})
+
+	}
+})
+
 app.use(middlewares.authHandler);
 
 app.get('/',(req, res) => {

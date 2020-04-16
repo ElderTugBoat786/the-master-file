@@ -28,7 +28,8 @@ function authHandler(req,res,next){
 
 
 function allowAllCors(req,res,next){
-  res.header('Access-Control-Allow-Origin' , '*' );
+  res.set('Access-Control-Allow-Origin' , 'http:\/\/localhost:300' );
+  res.header("Access-Control-Allow-Credentials", true);
   next();
 }
 

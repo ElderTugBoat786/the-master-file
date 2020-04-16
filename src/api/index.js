@@ -21,17 +21,53 @@ router.get('/', (req, res) => {
   });
 });
 
+
+
 router.get('/challenges',(req,res) => {
-	connection.query('SELECT * FROM challenge LEFT JOIN users_challenges ON challenge.id  = users_challenges.id_challenge AND users_challenges.id_users ='+req.user.id,function(err,rows){
+	connection.query('SELECT challenge.id,challenge.name,challenge.description,challenge.reward,challenge.level,challenge.created_at,users_challenges.completed_at FROM challenge LEFT JOIN users_challenges ON challenge.id  = users_challenges.id_challenge AND users_challenges.id_user ='+req.user.id,function(err,rows){
 		if (err) {
 			res.json({
 				error : 1,
 				massage : 'error in db query',
+				errordb : err
 			})
 		}else {
 			res.json(rows)
 		}
 	})
+})
+
+router.post('/challenges/:id',(req,res) => {
+
+	if (req.body.videolink == undefined && req.body.imagelink == undefined) {
+		res.json({
+			error : 1,
+			message : 'Missing param'
+		})
+	}else {
+		var query = 'INSERT INTO users_challenges SET id_user = '+req.user.id+', id_challenge = '+req.params.id
+		if (req.body.videolink != undefined) {
+			query += ' , video_link = "'+req.body.videolink+'"'
+		}
+		if (req.body.imagelink != undefined) {
+			query += ' , images_link = "'+req.body.imagelink+'"'
+		}
+		connection.query(query,(err,result) => {
+			if ( err ) {
+				res.json({
+					error : 1,
+					message : 'error in db query',
+					errodb : err
+				})
+			}else {
+				res.json({
+					error : 0,
+					message : 'update success'
+				})
+			}
+		})
+	}
+
 })
 
 router.get('/user',(req,res) => {
