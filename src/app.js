@@ -95,6 +95,12 @@ app.post('/register',(req,res) => {
 	}
 })
 
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+
 app.use(middlewares.authHandler);
 
 app.get('/',(req, res) => {
