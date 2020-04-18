@@ -39,7 +39,7 @@ router.get('/challenges',(req,res) => {
 
 router.post('/challenges/:id',(req,res) => {
 
-	if (req.body.videolink == undefined && req.body.imagelink == undefined) {
+	if (req.body.videolink == undefined && req.body.imagelink == undefined && req.body.description == undefined) {
 		res.json({
 			error : 1,
 			message : 'Missing param'
@@ -51,6 +51,9 @@ router.post('/challenges/:id',(req,res) => {
 		}
 		if (req.body.imagelink != undefined) {
 			query += ' , images_link = "'+req.body.imagelink+'"'
+		}
+		if (req.body.description != undefined) {
+			query += ' , description = "'+req.body.description+'"'
 		}
 		connection.query(query,(err,result) => {
 			if ( err ) {

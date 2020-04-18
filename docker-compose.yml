@@ -10,6 +10,9 @@ services:
           VIRTUAL_HOST:
           LETSENCRYPT_HOST:
           LETSENCRYPT_EMAIL:
+        deploy:
+          restart_policy:
+            condition: on-failure
 networks:
   nginx-proxy:
     external: true
