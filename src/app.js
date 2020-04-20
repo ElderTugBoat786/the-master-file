@@ -72,10 +72,11 @@ app.post('/register',(req,res) => {
 			if (err) return res.json({error:err});
 
 			if (rows.length == 0) {
-				connection.query('INSERT INTO users (username,password,email,score,active,level_id,admin) VALUES ("'+
+				connection.query('INSERT INTO users (username,password,email,avatar,score,active,level_id,admin) VALUES ("'+
 														req.body.username+'","'+
 														req.body.password+'","'+
-														req.body.email+'",0,0,0,0)',(err,result) => {
+														req.body.email+'","'+
+														req.body.avatar+'",0,0,0,0)',(err,result) => {
 					if (err) {
 						res.json({error:err});
 					}else {

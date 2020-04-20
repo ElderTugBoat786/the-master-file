@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 
 
 router.get('/challenges',(req,res) => {
-	connection.query('SELECT challenge.id,challenge.name,challenge.description,challenge.reward,challenge.level,challenge.created_at,users_challenges.completed_at FROM challenge LEFT JOIN users_challenges ON challenge.id  = users_challenges.id_challenge AND users_challenges.id_user ='+req.user.id,function(err,rows){
+	connection.query('SELECT challenge.id,challenge.name,challenge.description,challenge.reward,challenge.level,challenge.created_at,users_challenges.completed_at,users_challenges.video_link,users_challenges.images_link,users_challenges.description FROM challenge LEFT JOIN users_challenges ON challenge.id  = users_challenges.id_challenge AND users_challenges.id_user ='+req.user.id,function(err,rows){
 		if (err) {
 			res.json({
 				error : 1,
