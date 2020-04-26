@@ -20,7 +20,12 @@ passport.serializeUser(function(user, done) {
 // used to deserialize the user
 passport.deserializeUser(function(id, done) {
   connection.query("select * from users where id = "+id,function(err,rows){
-    done(err, rows[0]);
+		if (err) return done(err);
+		if (rows.length == 1) {
+			done(err, rows[0]);
+		}else {
+			done(err, []);
+		}
   });
 });
 
