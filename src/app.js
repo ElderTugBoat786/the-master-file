@@ -20,7 +20,7 @@ var passport = require('./passport/setup')
 
 const app = express();
 
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
 				  host     : process.env.DB_HOST,
           port     : process.env.DB_PORT,
 				  user     : process.env.DB_USER,
@@ -76,7 +76,7 @@ app.post('/register',(req,res) => {
 														req.body.username+'","'+
 														req.body.password+'","'+
 														req.body.email+'","'+
-														req.body.avatar+'",0,0,0,0)',(err,result) => {
+														(req.body.avatar == undefined ? 0 : req.body.avatar)+'",0,0,0,0)',(err,result) => {
 					if (err) {
 						res.json({error:err});
 					}else {
