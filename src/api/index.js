@@ -36,6 +36,12 @@ router.get('/challenges',(req,res) => {
 	})
 })
 
+router.options('*',(req,res) => {
+	res.header('Access-Control-Allow-Methods', 'GET,PUT, POST,DELETE');
+	res.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Custom-Header");
+
+	return res.status(200).end();
+})
 router.post('/challenges/:id',(req,res) => {
 
 	if (req.body.videolink == undefined && req.body.imagelink == undefined && req.body.description == undefined) {
