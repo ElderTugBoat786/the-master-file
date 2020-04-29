@@ -36,12 +36,25 @@ router.get('/challenges',(req,res) => {
 	})
 })
 
-router.options('*',(req,res) => {
-	res.header('Access-Control-Allow-Methods', 'GET,PUT, POST,DELETE');
-	res.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Custom-Header");
-
-	return res.status(200).end();
+router.get('/allchallenges',(req,res) => {
+	connection.query(`SELECT challenge.id,challenge.name,challenge.description,challenge.reward,challenge.level,challenge.created_at,
+												users_challenges.completed_at,users_challenges.video_link,users_challenges.images_link,
+										        users_challenges.description AS user_challenge_description,users.username
+											FROM challenge
+										    LEFT JOIN users_challenges ON challenge.id  = users_challenges.id_challenge
+										    INNER JOIN users ON users_challenges.id_user = users.id`,function(err,rows){
+		if (err) {
+			res.json({
+				error : 1,
+				massage : 'error in db query',
+				errordb : err
+			})
+		}else {
+			res.json(rows)
+		}
+	})
 })
+
 router.post('/challenges/:id',(req,res) => {
 
 	if (req.body.videolink == undefined && req.body.imagelink == undefined && req.body.description == undefined) {
@@ -51,6 +64,9 @@ router.post('/challenges/:id',(req,res) => {
 		})
 	}else {
 		var query = 'INSERT INTO users_challenges SET id_user = '+req.user.id+', id_challenge = '+req.params.id
+		if (req.body.score == undefined) {
+			req.body.score = 0;
+		}
 		if (req.body.videolink != undefined) {
 			query += ' , video_link = "'+req.body.videolink+'"'
 		}
@@ -83,9 +99,39 @@ router.post('/challenges/:id',(req,res) => {
 								errodb : err
 							})
 						}else {
-							res.json({
-								error : 0,
-								message : 'update success'
+
+							connection.query(`SELECT score FROM users WHERE id = `+req.user.id,(err,rows) => {
+								if ( err ) {
+									res.json({
+										error : 1,
+										message : 'error in db query',
+										errodb : err
+									})
+								}else {
+									if (rows.length) {
+										connection.query('UPDATE users SET score = '+(parseInt(rows[0].score) + parseInt(req.body.score) )+' WHERE id = '+req.user.id,(err,result) => {
+											if ( err ) {
+												res.json({
+													error : 1,
+													query: query,
+													message : 'error in db query',
+													errodb : err
+												})
+											}else {
+												res.json({
+													error : 0,
+													message : 'update success'
+												})
+											}
+										})
+						      }else {
+										res.json({
+											error : 1,
+											message : 'error in db query',
+											errodb : err
+										})
+						      }
+								}
 							})
 						}
 					})
@@ -95,7 +141,7 @@ router.post('/challenges/:id',(req,res) => {
 	}
 })
 
-router.patch('/challenges/:id',(req,res) => {
+router.post('/challenges/update/:id',(req,res) => {
 
 	if (req.body.videolink == undefined && req.body.imagelink == undefined && req.body.description == undefined) {
 		res.json({ error : 1, message : 'Missing param' })
